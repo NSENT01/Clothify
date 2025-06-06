@@ -1,4 +1,8 @@
-flask
-flask-cors
+Django
+djangorestframework
+djangorestframework-simplejwt
+dj-rest-auth
+django-allauth
+django-cors-headers
 python-dotenv
 requests
