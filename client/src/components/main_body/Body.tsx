@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 function Body() {
     return (
         <>
-            <div className="absolute left-2/21 top-80 px-6 py-10 bg-transparent text-stone-800 font-serif">
-                <h1 className="text-6xl font-light mb-4">Welcome to Clothify</h1>
+            <div className="absolute left-2/21 top-80 px-6 py-10 bg-transparent text-stone-800 font-sans font-semibold">
+                <h1 className="text-6xl font-md mb-4">Welcome to Clothify</h1>
                 <div className='flex flex-row items-start'>
                     <Link
                         to="/get-started"
