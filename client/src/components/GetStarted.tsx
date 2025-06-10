@@ -3,8 +3,35 @@ import logo from '../assets/Clothify.logo.png';
 import facebook from '../assets/Facebook-Logo.png';
 import apple from '../assets/apple-icon.png';
 import google from '../assets/google-icon.png';
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export default function GetStarted() {
+  const navigate = useNavigate();
+
+  const[formData, setFormData] = useState({username: "", first_name: "", last_name: "", email: "", password: ""});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCreate = async() => {
+    try {
+      const account = await axios.post("/api/auth/create/", formData, {headers: {'Content-Type': 'application/json',}, withCredentials: true,});
+      console.log(account.data)
+      navigate('/login');
+    } catch(error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error response:', error.response.data);
+      } else if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      } else {
+        console.error('An unknown error occurred');
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen py-20 px-4 bg-white">
 
@@ -20,19 +47,22 @@ export default function GetStarted() {
     {/* Left section - direct account creation */}
     <div className="w-full md:w-1/2 p-8 bg-white">
       {[
-        { label: "Username", placeholder: "Username" },
-        { label: "First Name", placeholder: "First Name" },
-        { label: "Last Name", placeholder: "Last Name" },
-        { label: "Email Address", placeholder: "name@example.com" },
-        { label: "Password", placeholder: "Password", type: "password" },
+        { label: "username", placeholder: "Username" },
+        { label: "first_name", placeholder: "First Name" },
+        { label: "last_name", placeholder: "Last Name" },
+        { label: "email", placeholder: "name@example.com", type: "email" },
+        { label: "password", placeholder: "Password", type: "password" },
       ].map(({ label, placeholder, type = "text" }, i) => (
         <div key={i} className="mb-5">
           <p className="font-sans text-gray-600 text-sm mb-1">{label}</p>
           <div className="relative h-12">
 
             <input
+              name={label}
               type={type}
+              onChange={handleChange}
               placeholder={placeholder}
+              required
               className="peer w-full h-full bg-transparent border-none outline-none text-black font-sans"
             />
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-gray-400"></span>
@@ -43,7 +73,7 @@ export default function GetStarted() {
       ))}
 
       {/* Submit button */}
-      <button className="relative group overflow-hidden flex items-center justify-center h-11 w-full border-2 text-stone-50 bg-stone-800 font-sans cursor-pointer">
+      <button onClick={handleCreate} className="relative group overflow-hidden flex items-center justify-center h-11 w-full border-2 text-stone-50 bg-stone-800 font-sans cursor-pointer">
         <span className="absolute inset-0 bg-stone-700 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0" />
         <span className="relative z-10 transition-colors duration-300 group-hover:text-stone-50">
           Continue

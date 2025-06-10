@@ -2,8 +2,32 @@ import logo from '../assets/Clothify.logo.png';
 import facebook from '../assets/Facebook-Logo.png';
 import apple from '../assets/apple-icon.png';
 import google from '../assets/google-icon.png';
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  const[formData, setFormData] = useState({email: "", password: ""});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async() => {
+       try {
+          const res = await axios.post("/api/auth/login/", formData, { withCredentials: true });
+          console.log("Login success", res.data);
+          navigate('/wardrobe')
+          // redirect or set user state
+        } catch (err) {
+          console.error("Login error", err);
+        }
+    }
+
+
+
   return (
    <div className="flex flex-col items-center min-h-screen py-20 px-4 bg-white">
 
@@ -19,15 +43,18 @@ export default function Login() {
     {/* Left section - direct account creation */}
     <div className="w-full md:w-1/2 p-8 bg-white">
       {[
-        { label: "Email Address", placeholder: "name@example.com" },
-        { label: "Password", placeholder: "Password", type: "password" },
+        { label: "email", placeholder: "name@example.com", type: "email" },
+        { label: "password", placeholder: "Password", type: "password" },
       ].map(({ label, placeholder, type = "text" }, i) => (
         <div key={i} className="mb-5">
           <p className="font-sans text-gray-600 text-sm mb-1">{label}</p>
           <div className="relative h-12">
             <input
+              name={label}
               type={type}
+              onChange={handleChange}
               placeholder={placeholder}
+              required
               className="peer w-full h-full bg-transparent border-none outline-none text-black font-sans"
             />
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-gray-400"></span>
@@ -37,7 +64,7 @@ export default function Login() {
       ))}
 
       {/* Submit button */}
-      <button className="relative group overflow-hidden flex items-center justify-center h-11 w-full border-2 text-stone-50 bg-stone-800 font-sans cursor-pointer">
+      <button onClick={handleLogin} className="relative group overflow-hidden flex items-center justify-center h-11 w-full border-2 text-stone-50 bg-stone-800 font-sans cursor-pointer">
         <span className="absolute inset-0 bg-stone-700 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0" />
         <span className="relative z-10 transition-colors duration-300 group-hover:text-stone-50">
           Log In

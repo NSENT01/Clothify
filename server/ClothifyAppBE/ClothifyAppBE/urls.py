@@ -15,8 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.http import JsonResponse
+from django.urls import path, include
+
+def api_root(request):
+    return JsonResponse({"message": "Welcome to the Clothify API"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/auth/', include('AuthAPI.urls')),
+    path('', api_root),
 ]

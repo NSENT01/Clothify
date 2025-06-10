@@ -8,7 +8,7 @@ function Body() {
                 <div className='flex flex-row items-start'>
                     <Link
                         to="/get-started"
-                        className="relative group overflow-hidden flex not-italic font-sans text-stone-800 items-center mx-3 justify-center h-15 w-40 text-lg font-medium border-2 border-stone-800 cursor-pointer"
+                        className="relative group overflow-hidden flex not-italic font-sans rounded-lg text-stone-800 items-center mx-3 justify-center h-15 w-40 text-lg font-medium border-2 border-stone-800 cursor-pointer"
                     >
                         <span className="absolute inset-0 bg-stone-800 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0"></span>
 

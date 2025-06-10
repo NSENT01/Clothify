@@ -17,7 +17,7 @@ const Header = () => {
           transition: "bg-amber-50",
           hov: "bg-amber-50",
           bg: "bg-transparent",
-        };
+        };  
       case "/login":
       case "/get-started":
       default:
@@ -79,7 +79,7 @@ const Header = () => {
             {/* Get Started Button */}
             <Link
                 to="/get-started"
-                className={`relative group overflow-hidden flex items-center justify-center h-10 w-34 border-2 ${text} font-medium font-sans cursor-pointer`}
+                className={`relative group overflow-hidden flex items-center justify-center rounded-lg h-10 w-34 border-2 ${text} font-medium font-sans cursor-pointer`}
             >
                 <span className={`absolute inset-0 ${hov} transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0`} />
                 <span className={`relative z-10 transition-colors duration-300 ${location.pathname === "/" ? "group-hover:text-stone-800" : "group-hover:text-amber-50"}`}>GET STARTED</span>
