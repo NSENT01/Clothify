@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
+# access httponly cookie to authenticate jwt token before returning protected requests to frontend
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         # Read the token from the cookie instead of Authorization header

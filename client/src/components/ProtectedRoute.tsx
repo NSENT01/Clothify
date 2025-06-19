@@ -3,6 +3,7 @@ import  AuthContext from '../contexts/AuthContext';
 import { useContext } from "react";
 import type { ReactElement } from "react";
 
+{/* surrounds protected routes in app, if user checked and null, navigate to login ,else allow access to route */}
 export const ProtectedRoute = ({ children }: { children: ReactElement }) => {
     const user = useContext(AuthContext);
 

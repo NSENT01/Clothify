@@ -6,6 +6,8 @@ import Body from './components/main_body/Body.tsx';
 import GetStarted from './components/GetStarted.tsx';
 import WardBody from "./components/wardrobe/WardBody.tsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 function App() {
 
@@ -29,12 +31,14 @@ function App() {
   return (
     <div className={`${BG()} bg-cover bg-center min-h-screen`}>
       <Header />
-      <Routes>
-        <Route path="/" element={<Body />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/get-started" element={<GetStarted />} />
-        <Route path="/wardrobe" element={<ProtectedRoute><WardBody /></ProtectedRoute>} />
-      </Routes>
+      <GoogleOAuthProvider clientId="235009762220-uvsie9f6goo208p0b4us0ceuaj0tktnq.apps.googleusercontent.com">
+        <Routes>
+          <Route path="/" element={<Body />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/wardrobe" element={<ProtectedRoute><WardBody /></ProtectedRoute>} />
+        </Routes>
+      </GoogleOAuthProvider>
     </div>
   )
 }

@@ -1,13 +1,22 @@
 import logo from '../assets/Clothify.logo.png';
-import facebook from '../assets/Facebook-Logo.png';
-import apple from '../assets/apple-icon.png';
 import google from '../assets/google-icon.png';
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
+import AuthContext from "../contexts/AuthContext";
 
 export default function Login() {
+
+  {/* use context to verify if jwt/httponly are in browser based on profile fetch, if yes redirect to wardrobe, else nothing */}
   const navigate = useNavigate();
+
+  const authContext = useContext(AuthContext);
+  useEffect(() => {
+    if (authContext?.checked && authContext?.user) {
+      navigate("/wardrobe");
+    }
+  }, [authContext, navigate]);
 
   const[formData, setFormData] = useState({email: "", password: ""});
 
@@ -15,17 +24,42 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  {/* post to login view, if formdata exists in db, return jwt in httponly cookie and reload to check authcontext again */}
   const handleLogin = async() => {
        try {
           const res = await axios.post("/api/auth/login/", formData, { withCredentials: true });
+          if (res.data.refresh) {
+            localStorage.setItem("refresh", res.data.refresh);
+          }
           console.log("Login success", res.data);
-          navigate('/wardrobe')
-          // redirect or set user state
+          window.location.reload()
         } catch (err) {
           console.error("Login error", err);
         }
     }
 
+    {/* post to google view where redirected to google login pop up, same token return process */}
+    const handleGoogleLogin = useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+        try {
+          const res = await axios.post('/api/auth/google/', {
+            access_token: tokenResponse.access_token
+          }, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+
+          if (res.data.refresh) {
+            localStorage.setItem("refresh", res.data.refresh);
+          }
+
+          console.log("Google Login Success", res.data);
+          window.location.reload();
+        } catch (err) {
+          console.error("Google Login Error", err);
+        }
+      },
+      onError: (err) => console.error("Google Login Failed", err),
+    });
+
+  
 
 
   return (
@@ -78,12 +112,11 @@ export default function Login() {
     {/* Right section - third party login options */}
     <div className="w-full md:w-1/2 p-8 bg-gray-50 flex flex-col items-center">
       {[ 
-        { label: "Continue with Google", logo: google, logoClass: "h-5 w-5" },
-        { label: "Continue with Apple", logo: apple, logoClass: "h-7 w-7" },
-        { label: "Continue with Facebook", logo: facebook, logoClass: "h-5 w-5" },
-      ].map(({ label, logo, logoClass }, i) => (
+        { label: "Continue with Google", logo: google, logoClass: "h-5 w-5", onClick: () => handleGoogleLogin() },
+      ].map(({ label, logo, logoClass, onClick }, i) => (
         <button
           key={i}
+          onClick={onClick}
           className="relative group overflow-hidden flex items-center justify-center h-13 w-full my-2 border text-black cursor-pointer bg-white"
         >
           <span className="absolute inset-0 bg-gray-200 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0" />

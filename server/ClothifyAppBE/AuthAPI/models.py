@@ -4,20 +4,22 @@ from django.conf import settings
 
 # Create your models here.
 
+#custom user manager, requires email and sets default name, last name and username
+#hashes password for security
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field is required')
-        if not extra_fields.get('first_name'):
-            raise ValueError('The First Name field is required')
-        if not extra_fields.get('last_name'):
-            raise ValueError('The Last Name field is required')
-        if not extra_fields.get('username'):
-            raise ValueError('The Username field is required')
+        extra_fields.setdefault('first_name', '.')
+        extra_fields.setdefault('last_name', '.')
+        extra_fields.setdefault('username', email.split('@')[0])
         
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
         user.save()
         return user
 
@@ -27,8 +29,9 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+#custom user
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length = 50, unique = True)
+    username = models.CharField(max_length = 50)
     email = models.EmailField(unique = True)
     first_name = models.CharField(max_length = 50)
     last_name = models.CharField(max_length = 50)
