@@ -10,6 +10,7 @@ from django.core.files.base import ContentFile
 import os
 import re
 from django.conf import settings
+import uuid
 
 pixian_id = os.getenv("PIXIAN_ID")
 pixian_secret = os.getenv("PIXIAN_SECRET")
@@ -31,6 +32,7 @@ def image_upload(request):
     image_file = request.FILES.get('uploadItem')
     title = request.data.get('title')
     clothing_type = request.data.get('clothingType')
+    unique_suffix = uuid.uuid4().hex[:8]
 
     if not image_file or not title or not clothing_type:
         return Response({'error': 'Missing fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +60,7 @@ def image_upload(request):
         user=request.user,
         clothingType=clothing_type,
     )
-    clothing_item.uploadItem.save(f"{safe_title}_nobg.png", processed_image)
+    clothing_item.uploadItem.save(f"{safe_title}_{unique_suffix}_nobg.png", processed_image)
     clothing_item.save()
 
     serializer = ClothingItemSerializer(clothing_item)
